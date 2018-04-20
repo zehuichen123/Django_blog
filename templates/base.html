@@ -94,7 +94,7 @@
                     <ul>
                         {% for date in date_list %}
                         <li>
-                            <a href="#">{{date.year}}-{{date.month}}</a>
+                            <a href="{% url 'blog:archives' date.year date.month %}">{{date.year}}-{{date.month}}</a>
                         </li>
                         {% empty %}
                         No archives yet!
@@ -108,7 +108,7 @@
                     <ul>
                         {% for category in category_list %}
                         <li>
-                            <a href="#">{{category.name}}<span class="post-count">(13)</span></a>
+                            <a href="{% url 'blog:category' category.pk %}">{{category.name}}</a>
                         </li>
                         {% empty %}
                         No categories yet!
