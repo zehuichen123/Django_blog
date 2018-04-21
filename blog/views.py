@@ -6,7 +6,7 @@ import markdown
 
 # Create your views here.
 def index(request):
-	post_list=Post.objects.all().order_by('-created_time')
+	post_list=Post.objects.all()
 	return render(request,'blog/index.html',context={'post_list':post_list})
 
 def detail(request,pk):
@@ -23,7 +23,6 @@ def detail(request,pk):
 		'post':post,
 		'form':form,
 		'comment_list':comment_list,
-		'comment_num':comment_num,
 	}
 	return render(request,'blog/detail.html',context=context)
 
