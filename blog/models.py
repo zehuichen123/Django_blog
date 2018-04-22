@@ -21,6 +21,8 @@ class Post(models.Model):
 	created_time=models.DateTimeField()
 	modified_time=models.DateTimeField()
 
+	views=models.PositiveIntegerField(default=0)
+
 	#abstract
 	excerpt=models.CharField(max_length=200,blank=True)
 
@@ -37,3 +39,10 @@ class Post(models.Model):
 
 	class Meta:
 		ordering=['-created_time']
+
+	def increase_views(self):
+		self.views+=1
+		self.save(update_fields=['views'])
+
+
+

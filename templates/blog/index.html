@@ -10,8 +10,8 @@
                 <span class="post-category"><a href="#">{{post.category.name}}</a></span>
                 <span class="post-date"><a href="#"><time class="entry-date" datetime="{{post.created_time}}">{{post.created_time}}</time></a></span>
                 <span class="post-author"><a href="#">{{post.author}}</a></span>
-                <span class="comments-link"><a href="#">4 comments</a></span>
-                <span class="views-count"><a href="#">588 views</a></span>
+                <span class="comments-link"><a href="#">{{post.comment_set.count}} comments</a></span>
+                <span class="views-count"><a href="{{post.get_absolute_url}}">{{post.views}} views</a></span>
             </div>
             <div class="entry-content clearfix">
                 <p>{{post.excerpt}}</p>
