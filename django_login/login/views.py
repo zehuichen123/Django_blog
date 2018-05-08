@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.conf import settings
 from . import models
 from . import forms
+import datetime
 import hashlib
 # Create your views here.
 
@@ -20,6 +22,9 @@ def login(request):
             password=login_form.cleaned_data['password']
             try:
                 user=models.User.objects.get(name=username)
+                if not user.has_confirmed:
+                    message="Email confirmation hasn't been done!"
+                    return render(request,'login/login.html',locals())
                 if user.password==hash_code(password):
                     request.session['is_login']=True
                     request.session['user_id']=user.id
@@ -64,7 +69,11 @@ def register(request):
                 new_user.email=email
                 new_user.sex=sex
                 new_user.save()
-                return redirect('/login/')
+
+                code=make_confirm_string(new_user)
+                send_email(email,code)
+                message="Email has been sent! Please Check!"
+                return render(request,'login/confirm.html',locals())
     register_form=forms.RegisterForm()
     return render(request,'login/register.html',locals())
 
@@ -74,8 +83,49 @@ def logout(request):
     request.session.flush()
     return redirect('/index/')
 
+def user_confirm(request):
+    code=request.GET.get('code',None)
+    message=''
+    try:
+        confirm=models.ConfirmString.objects.get(code=code)
+    except:
+        message='Invalid Confirmation.'
+        return render(request,'login/confirm.html',locals())
+    c_time=confirm.c_time
+    now=datetime.datetime.now()
+    if now>c_time+datetime.timedelta(settings.CONFIRM_DAYS):
+        confirm.user.delete()
+        message="Your email code has out of date!"
+        return render(request,'login/confirm.html',locals())
+    else:
+        confirm.user.has_confirmed=True
+        confirm.user.save()
+        confirm.delete()
+        message="thanks for confirmation. "
+        return render(request,'login/confirm.html',locals())
+
 def hash_code(s,salt="mysite"):
     h=hashlib.sha256()
     s+=salt
     h.update(s.encode())
     return h.hexdigest()
+
+def make_confirm_string(user):
+    now=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    code=hash_code(user.name,now)
+    models.ConfirmString.objects.create(code=code,user=user,)
+    return code
+
+def send_email(email,code):
+    from django.core.mail import EmailMultiAlternatives
+    subject="From lovesnowbest's check email"
+    text_content="Welcome to this login page"
+    html_content='''
+        <p>Thanks for registering <a href="http://{}/confirm/?code={}"
+         target=blank>www.lovesnowbest.site</a>,\
+         This is lovensnowbest's login page.</p>
+         <p>Please click link to confirm your registeration.</p>
+    '''.format('127.0.0.1:8000',code,settings.CONFIRM_DAYS)
+    msg=EmailMultiAlternatives(subject,text_content,settings.EMAIL_HOST_USER,[email])
+    msg.attach_alternative(html_content,'text/html')
+    msg.send()
