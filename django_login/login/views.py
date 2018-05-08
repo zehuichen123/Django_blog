@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from . import models
 from . import forms
+import hashlib
 # Create your views here.
 
 def index(request):
@@ -19,7 +20,7 @@ def login(request):
             password=login_form.cleaned_data['password']
             try:
                 user=models.User.objects.get(name=username)
-                if user.password==password:
+                if user.password==hash_code(password):
                     request.session['is_login']=True
                     request.session['user_id']=user.id
                     request.session['user_name']=user.name
@@ -59,7 +60,7 @@ def register(request):
                 # if all ok, create an account
                 new_user=models.User()
                 new_user.name=username
-                new_user.password=password1
+                new_user.password=hash_code(password1)
                 new_user.email=email
                 new_user.sex=sex
                 new_user.save()
@@ -72,3 +73,9 @@ def logout(request):
         return redirect('/index/')
     request.session.flush()
     return redirect('/index/')
+
+def hash_code(s,salt="mysite"):
+    h=hashlib.sha256()
+    s+=salt
+    h.update(s.encode())
+    return h.hexdigest()
