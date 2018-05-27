@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block main %}
     {% for post in post_list %}
         <article class="post post-{{post.pk}}">
@@ -20,6 +19,9 @@
                 </div>
             </div>
         </article>
+        {% csrf_token %}
+        
+        <button onclick="doPost()">Click</button>
     {% empty %}
         <div class="no-post">No posts yet!</div>
     {% endfor %}

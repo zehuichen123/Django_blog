@@ -38,3 +38,6 @@ def category(request,pk):
 	post_list=Post.objects.filter(category=cate).order_by('-created_time')
 	return render(request,'blog/index.html',context={'post_list':post_list})
 
+def print_abc(request):
+	print('abc')
+	return render(request,'base.html')

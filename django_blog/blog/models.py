@@ -43,6 +43,9 @@ class Post(models.Model):
 	def increase_views(self):
 		self.views+=1
 		self.save(update_fields=['views'])
+	
+	def print_obj(self):
+		print('abc')
 
 
 

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="title">
+	<p>Welcome to <br>
+		lovesnowbest's <br>
+		Image Search Console!</p>
+</div>
+<div class="search">
+	<form method='POST' enctype="multipart/form-data" action='/upload/'>{% csrf_token %}
+		<a class="button button-border button-rounded file custom">Upload
+			<input type="file" name="search_img">
+		</a>
+		<br>
+		<div class="panel-group" id="accordion">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" 
+						   href="#collapseTwo">
+							Advanced Search Options
+						</a>
+					</h4>
+				</div>
+				<div id="collapseTwo" class="panel-collapse collapse">
+					<div class="panel-body">
+						<br>
+						<span>File Size: </span>
+						<select name="file_size">
+							<option value=0>select...</option>
+						    <option value=1>390*190</option>
+						    <option value=2>1080*792</option>
+						    <option value=3>1920*1080</option>
+						</select>
+						<br>
+						<br>
+						<span>Source: </span>
+						<select name="source">
+							<option value=0>select...</option>
+						    <option value=1>local(default)</option>
+						    <option value=2>Baidu</option>
+						    <option value=3>Google</option>
+						</select>
+						<br>
+						<br>
+						<span>Format: </span>
+						<select name="format">
+							<option value=0>select...</option>
+						    <option value=1>jpeg/jpg(default)</option>
+						    <option value=2>png</option>
+						    <option value=3>gif</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<a class="button button-border button-rounded file custom">
+			Start Search!
+			<input type='submit' value="Submit">
+		</a>
+		<br>
+		<br>
+		
+	</form> 
+</div>
+{% endblock %}

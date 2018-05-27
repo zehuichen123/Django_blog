@@ -21,6 +21,13 @@
     <script src="{% static 'blog/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'blog/js/pace.min.js' %}"></script>
     <script src="{% static 'blog/js/modernizr.custom.js' %}"></script>
+    <script>
+        function doPost()
+        {
+            url='http://127.0.0.1:8000/print/'
+            $.get(url);
+        }
+    </script>
 </head>
 
 <body>
